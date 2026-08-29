@@ -1,0 +1,14 @@
+<UserControl x:Class="RexHides.Views.HotkeyCaptureBox"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <TextBox x:Name="CaptureBox"
+             IsReadOnly="True"
+             IsReadOnlyCaretVisible="False"
+             Padding="8,5"
+             FontWeight="SemiBold"
+             VerticalContentAlignment="Center"
+             PreviewKeyDown="CaptureBox_PreviewKeyDown"
+             GotKeyboardFocus="CaptureBox_GotKeyboardFocus"
+             LostKeyboardFocus="CaptureBox_LostKeyboardFocus"
+             ToolTip="Click, then press the key combination (must include Ctrl, Alt, Shift or Win)"/>
+</UserControl>

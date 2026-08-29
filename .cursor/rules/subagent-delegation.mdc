@@ -1,0 +1,16 @@
+---
+description: When to delegate work to RexHides project subagents
+alwaysApply: true
+---
+
+# Subagent delegation
+
+| Agent | Delegate when | Do not delegate when |
+|---|---|---|
+| `win32-interop` | New/changed P/Invoke, WinEvent hooks, HICON handling, UIPI/elevation quirks, DPI math | Pure XAML/MVVM, docs, packaging |
+| `wpf-mvvm-ui` | XAML layout, styles, bindings, view models, settings UI | Native interop, tray lifetime, releases |
+| `tray-lifecycle` | NotifyIcon creation/disposal, hidden-window bookkeeping, crash recovery, restore-all, elevation handoff | Visual styling, rule-matching logic |
+| `release-docs` | README/CHANGELOG updates after feature changes, version bumps, publish settings | Code-only refactors with no user-visible change |
+| `path-map` | Settings, hotkeys, elevation, watchdog, or Windows integration paths change | Isolated UI edits |
+
+For trivial one-line fixes, skip delegation and edit directly.

@@ -1,0 +1,14 @@
+---
+description: RexHides coding conventions
+alwaysApply: true
+---
+
+# RexHides conventions
+
+- .NET 8 WPF, x64 only. `UseWPF` + `UseWindowsForms` (WinForms only for `NotifyIcon`).
+- All P/Invoke lives in `src/RexHides/Win32Native/` as `partial class NativeMethods`, one file per DLL; constants in `Win32Constants.cs`.
+- MVVM via CommunityToolkit.Mvvm source generators; services are plain UI-thread-affine singletons wired in `App.xaml.cs` (no DI container).
+- `WindowHidingService` is the single owner of hidden-window state; never hide/show a tracked window around it.
+- Settings persist to `%AppData%\RexHides\settings.json` through `SettingsService`; save immediately on change.
+- Safety invariant: a window hidden by RexHides must never be permanently lost - keep the crash-recovery file and restore-all-on-exit paths intact.
+- Update README.md and CHANGELOG.md whenever user-visible behavior changes.

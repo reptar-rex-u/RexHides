@@ -1,0 +1,55 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Read version
+        id: version
+        shell: pwsh
+        run: |
+          [xml]$project = Get-Content src/RexHides/RexHides.csproj
+          $version = $project.Project.PropertyGroup.Version
+          "version=$version" >> $env:GITHUB_OUTPUT
+
+      - name: Publish public build
+        shell: pwsh
+        run: |
+          dotnet publish src/RexHides/RexHides.csproj `
+            -c Release `
+            -r win-x64 `
+            --self-contained true `
+            -p:EnableGHome=false `
+            -p:PublishSingleFile=true `
+            -p:IncludeNativeLibrariesForSelfExtract=true `
+            -o dist/public
+
+      - name: Create release zip
+        id: zip
+        shell: pwsh
+        run: |
+          $zip = "dist/RexHides-${{ steps.version.outputs.version }}-win-x64.zip"
+          Compress-Archive -Path dist/public/RexHides.exe -DestinationPath $zip -Force
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/RexHides-${{ steps.version.outputs.version }}-win-x64.zip
+          generate_release_notes: true
