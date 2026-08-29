@@ -1,6 +1,6 @@
 # RexHides Installation and Build
 
-## Download (public build)
+## Download
 
 1. Open [GitHub Releases](https://github.com/reptar-rex-u/RexHides/releases).
 2. Download `RexHides-{version}-win-x64.zip`.
@@ -32,8 +32,6 @@ cd "R:\RexApps\5. Windows Apps\RexHides"
 dotnet build RexHides.sln
 ```
 
-Public build (default). For the personal G Home build, add `-p:EnableGHome=true` (see [PERSONAL.md](PERSONAL.md)).
-
 ## Run from source
 
 ```powershell
@@ -42,16 +40,10 @@ dotnet run --project src\RexHides
 
 ## Publish locally
 
-**Public shareable build** (self-contained single-file exe + zip):
+Self-contained single-file exe + zip:
 
 ```powershell
 .\scripts\publish-public.ps1
-```
-
-**Personal build** (G Home enabled, framework-dependent — for RexControls):
-
-```powershell
-.\scripts\publish-personal.ps1
 ```
 
 ## Release process (maintainers)

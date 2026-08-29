@@ -10,8 +10,8 @@
 
 | ID | Kind | Value / contract | Defined in | Also update |
 |---|---|---|---|---|
-| `rexhides.release` | github | https://github.com/reptar-rex-u/RexHides/releases — `RexHides-{version}-win-x64.zip` (self-contained, `EnableGHome=false`) | `.github/workflows/release.yml` | README, Install.md |
-| `rexhides.settings` | disk | `%AppData%\RexHides\settings.json` (personal build may include `GHome` profile) | app settings service | README |
+| `rexhides.release` | github | https://github.com/reptar-rex-u/RexHides/releases — `RexHides-{version}-win-x64.zip` (self-contained) | `.github/workflows/release.yml` | README, Install.md |
+| `rexhides.settings` | disk | `%AppData%\RexHides\settings.json` | app settings service | README |
 | `rexhides.hotkey` | input | Default `Ctrl+Alt+H`; configurable in settings | hotkey service | README |
 | `rexhides.elevation` | system | Optional elevated restart / Task Scheduler startup | elevation setup | setup docs |
 | `rexhides.watchdog` | process | Watchdog restores hidden windows after a force-kill | crash recovery services | README |
@@ -20,10 +20,9 @@
 
 ### When build variants or publish outputs change
 
-1. Update README, Install.md, PERSONAL.md, and this map.
-2. Public release: push `v*` tag → GitHub Actions → `dist/RexHides-{version}-win-x64.zip` on Releases.
-3. Local public preview: `.\scripts\publish-public.ps1` → `dist\public\` + zip under `dist\`.
-4. Personal build: `dotnet build -p:EnableGHome=true` or `.\scripts\publish-personal.ps1` → `dist\personal\` (not published).
+1. Update README, Install.md, and this map.
+2. Release: push `v*` tag → GitHub Actions → `RexHides-{version}-win-x64.zip` on Releases.
+3. Local preview: `.\scripts\publish-public.ps1` → `dist\public\` + zip under `dist\`.
 
 ### When settings or recovery behavior changes
 

@@ -19,21 +19,12 @@ A Windows system utility (.NET 8 WPF) that minimizes any application window to i
 
 Requires the .NET 8 SDK on Windows 10/11 (x64).
 
-**Public build** (default — no G Home):
-
 ```powershell
 dotnet build RexHides.sln
 dotnet run --project src/RexHides
 ```
 
-**Personal build** (includes G Home — see [PERSONAL.md](PERSONAL.md)):
-
-```powershell
-dotnet build RexHides.sln -p:EnableGHome=true
-dotnet run --project src/RexHides -p:EnableGHome=true
-```
-
-Publish a shareable public build locally:
+Publish a release build locally:
 
 ```powershell
 .\scripts\publish-public.ps1
@@ -41,7 +32,7 @@ Publish a shareable public build locally:
 
 Output: `dist\public\RexHides.exe`, `dist\public\index.html`, and `dist\RexHides-{version}-win-x64.zip`.
 
-Official public releases are built by GitHub Actions when you push a `v*` tag (see [Install.md](Install.md)).
+Official releases are built by GitHub Actions when you push a `v*` tag (see [Install.md](Install.md)).
 
 Run with `--minimized` to start straight into the tray. A running instance can
 be stopped gracefully with `--stop`; this signals the existing instance to run
@@ -84,8 +75,6 @@ src/RexHides/
 - UWP apps (Calculator, Settings, Store, and others hosted by ApplicationFrameHost) can stay DWM-cloaked if Windows terminated the suspended app while it was hidden. If recovery cannot bring the window back, open the app again from the Start menu.
 - The title bar button sits left of the caption controls, closer to the standard minimize button (including room for a fourth button such as Brave's profile control); apps with fully custom title bars (Chrome, Electron, some UWP apps) may still place it imperfectly.
 - While running elevated, dragging items from non-elevated apps onto the RexHides window is blocked by Windows (UIPI); use the built-in running-windows picker instead.
-
-> **Personal build only:** G Home persistent tray mode for the Google Home Brave PWA is documented in [PERSONAL.md](PERSONAL.md).
 
 ## Cursor subagents
 
