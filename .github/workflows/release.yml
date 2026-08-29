@@ -25,8 +25,7 @@ jobs:
         id: version
         shell: pwsh
         run: |
-          [xml]$project = Get-Content src/RexHides/RexHides.csproj
-          $version = $project.Project.PropertyGroup.Version
+          $version = (Select-Xml -Path src/RexHides/RexHides.csproj -XPath "//Version").Node.InnerText.Trim()
           "version=$version" >> $env:GITHUB_OUTPUT
 
       - name: Publish public build
