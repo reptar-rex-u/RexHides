@@ -16,15 +16,44 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d">
 
-    <Grid>
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="40" ResizeBorderThickness="6" GlassFrameThickness="0"
+                      CornerRadius="0" UseAeroCaptionButtons="False"/>
+    </WindowChrome.WindowChrome>
+
+    <Grid x:Name="RootGrid">
         <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
+        <!-- Title bar (drag, double-click and right-click are handled by WindowChrome) -->
+        <Grid Grid.Row="0" Margin="16,0,8,0">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <Grid Width="18" Height="18">
+                    <Ellipse Fill="#242424" Stroke="#33E5A00D" StrokeThickness="1"/>
+                    <Path Stroke="#E5A00D" StrokeThickness="1.6" StrokeStartLineCap="Round"
+                          StrokeEndLineCap="Round" StrokeLineJoin="Round"
+                          Data="M 9,4 L 9,10 M 6.2,7.8 L 9,10.6 L 11.8,7.8 M 4.8,12.6 L 4.8,14 L 13.2,14 L 13.2,12.6"/>
+                </Grid>
+                <TextBlock Text="RexHides" Margin="9,0,0,0" FontSize="12" FontWeight="SemiBold"
+                           Foreground="{StaticResource BentoMutedBrush}" VerticalAlignment="Center"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                <Button Style="{StaticResource CaptionButton}" Content="&#xE921;" ToolTip="Minimize"
+                        WindowChrome.IsHitTestVisibleInChrome="True" Click="MinimizeButton_Click"/>
+                <Button x:Name="MaximizeButton" Style="{StaticResource CaptionButton}" Content="&#xE922;"
+                        ToolTip="Maximize"
+                        WindowChrome.IsHitTestVisibleInChrome="True" Click="MaximizeButton_Click"/>
+                <Button Style="{StaticResource CaptionCloseButton}" Content="&#xE8BB;" ToolTip="Close to tray"
+                        WindowChrome.IsHitTestVisibleInChrome="True" Click="CloseButton_Click"/>
+            </StackPanel>
+        </Grid>
+
         <!-- Header -->
-        <Grid Grid.Row="0" Margin="24,20,24,8">
+        <Grid Grid.Row="1" Margin="24,6,24,8">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
@@ -47,17 +76,17 @@
                 </StackPanel>
             </StackPanel>
             <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                <Button Style="{StaticResource PrimaryAmberButton}" Margin="0,0,10,0"
+                <Button Style="{StaticResource PrimaryOrangeButton}" Margin="0,0,10,0"
                         Command="{Binding HideActiveWindowCommand}"
                         Content="Hide Active Window (3s)"/>
-                <Button Style="{StaticResource NeutralButton}"
+                <Button Style="{StaticResource HighlightButton}"
                         Command="{Binding RestoreAllCommand}"
                         Content="Restore All"/>
             </StackPanel>
         </Grid>
 
         <!-- Content -->
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
                       Padding="22,10,22,22" Focusable="False">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -277,7 +306,7 @@
         </ScrollViewer>
 
         <!-- Status bar -->
-        <Border Grid.Row="2" Background="Transparent" BorderBrush="#0AFFFFFF" BorderThickness="0,1,0,0"
+        <Border Grid.Row="3" Background="Transparent" BorderBrush="#0AFFFFFF" BorderThickness="0,1,0,0"
                 Padding="18,8">
             <TextBlock Text="{Binding StatusText}" Foreground="{StaticResource BentoMutedBrush}" FontSize="12"
                        TextTrimming="CharacterEllipsis"/>

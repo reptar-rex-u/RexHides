@@ -13,7 +13,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: [S
 
 ### Changed
 
-- Settings window redesigned in a dark bento style: near-black background with a soft glow, a dark title bar, and rounded tinted cards (blue hidden windows, purple auto-hide rules, green hotkey, amber options). Lists, tables, checkboxes, dropdowns, scrollbars, and tooltips are all dark, and the hidden-windows list shows a message when nothing is hidden.
+- Settings window redesigned in a dark bento style: near-black background with a soft glow, a custom dark title bar with the RexHides mark and rounded caption buttons, an orange "Hide Active Window" button, a brighter "Restore All" button, and rounded tinted cards (blue hidden windows, purple auto-hide rules, green hotkey, amber options). Lists, tables, checkboxes, dropdowns, scrollbars, and tooltips are all dark, and the hidden-windows list shows a message when nothing is hidden.
 - GitHub releases are self-contained win-x64 zips (no separate .NET Desktop Runtime install).
 - Main tray icon and title-bar minimize-to-tray button now use charcoal backgrounds with Plex-gold (`#E5A00D`) glyphs.
 - Tray context menus for the main tray icon and hidden-window icons now follow the Windows app light/dark theme detected when the tray manager starts; theme changes apply after the next tray manager start.

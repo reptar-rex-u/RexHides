@@ -18,6 +18,33 @@ public partial class MainWindow : Window
 
         HotkeyBox.SetDisplay(viewModel.HotkeyText);
         HotkeyBox.HotkeyCaptured += (_, hotkey) => viewModel.ApplyHotkey(hotkey);
+        StateChanged += (_, _) => UpdateMaximizeState();
+    }
+
+    private void MinimizeButton_Click(object sender, RoutedEventArgs e) => SystemCommands.MinimizeWindow(this);
+
+    private void MaximizeButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (WindowState == WindowState.Maximized)
+        {
+            SystemCommands.RestoreWindow(this);
+        }
+        else
+        {
+            SystemCommands.MaximizeWindow(this);
+        }
+    }
+
+    private void CloseButton_Click(object sender, RoutedEventArgs e) => Close();
+
+    private void UpdateMaximizeState()
+    {
+        bool maximized = WindowState == WindowState.Maximized;
+        MaximizeButton.Content = maximized ? "\uE923" : "\uE922";
+        MaximizeButton.ToolTip = maximized ? "Restore" : "Maximize";
+
+        // With custom chrome, a maximized window extends past the screen by the resize frame.
+        RootGrid.Margin = maximized ? SystemParameters.WindowResizeBorderThickness : new Thickness(0);
     }
 
     protected override void OnSourceInitialized(EventArgs e)

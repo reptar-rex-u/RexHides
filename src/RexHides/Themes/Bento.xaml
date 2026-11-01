@@ -234,13 +234,70 @@
         </Style.Triggers>
     </Style>
 
-    <Style x:Key="PrimaryAmberButton" TargetType="Button" BasedOn="{StaticResource BentoButton}">
-        <Setter Property="Background" Value="#47F2C477"/>
-        <Setter Property="BorderBrush" Value="#9EF2C477"/>
-        <Setter Property="Foreground" Value="{StaticResource AmberButtonTextBrush}"/>
+    <!-- Header primary action: warmer orange than the amber card accent. -->
+    <Style x:Key="PrimaryOrangeButton" TargetType="Button" BasedOn="{StaticResource BentoButton}">
+        <Setter Property="Background" Value="#4DFFA552"/>
+        <Setter Property="BorderBrush" Value="#B3FFA552"/>
+        <Setter Property="Foreground" Value="#FFDDBA"/>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="#66F2C477"/>
+                <Setter Property="Background" Value="#6BFFA552"/>
+                <Setter Property="BorderBrush" Value="#E6FFA552"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Neutral button with a little more presence than NeutralButton. -->
+    <Style x:Key="HighlightButton" TargetType="Button" BasedOn="{StaticResource BentoButton}">
+        <Setter Property="Background" Value="#1CFFFFFF"/>
+        <Setter Property="BorderBrush" Value="#40FFFFFF"/>
+        <Setter Property="Foreground" Value="#FFFFFF"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#2EFFFFFF"/>
+                <Setter Property="BorderBrush" Value="#5CFFFFFF"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Custom title bar buttons (Segoe Fluent Icons on Windows 11, MDL2 Assets on Windows 10). -->
+    <Style x:Key="CaptionButton" TargetType="Button">
+        <Setter Property="Width" Value="36"/>
+        <Setter Property="Height" Value="28"/>
+        <Setter Property="Margin" Value="2,0,0,0"/>
+        <Setter Property="Foreground" Value="{StaticResource BentoMutedBrush}"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="FontFamily" Value="Segoe Fluent Icons, Segoe MDL2 Assets"/>
+        <Setter Property="FontSize" Value="10"/>
+        <Setter Property="Focusable" Value="False"/>
+        <Setter Property="IsTabStop" Value="False"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#17FFFFFF"/>
+                <Setter Property="Foreground" Value="{StaticResource BentoTextBrush}"/>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="#0DFFFFFF"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <Style x:Key="CaptionCloseButton" TargetType="Button" BasedOn="{StaticResource CaptionButton}">
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#D9E5484D"/>
+                <Setter Property="Foreground" Value="#FFFFFF"/>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="#A6E5484D"/>
             </Trigger>
         </Style.Triggers>
     </Style>
