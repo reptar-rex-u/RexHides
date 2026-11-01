@@ -13,9 +13,4 @@ public class AppSettings
 
     /// <summary>Stretch feature: overlay a tray-minimize button on the active window's title bar.</summary>
     public bool EnableTitleBarButton { get; set; }
-
-#if GHOME
-    /// <summary>Opt-in persistent tray profile for the Google Home Brave PWA (personal build only).</summary>
-    public GHomeProfile GHome { get; set; } = new();
-#endif
 }

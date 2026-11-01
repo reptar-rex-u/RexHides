@@ -8,7 +8,6 @@ dotnet publish $Project `
     -c Release `
     -r win-x64 `
     --self-contained true `
-    -p:EnableGHome=false `
     -p:PublishSingleFile=true `
     -p:IncludeNativeLibrariesForSelfExtract=true `
     -o $OutDir

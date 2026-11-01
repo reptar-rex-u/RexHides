@@ -220,8 +220,6 @@
                     </StackPanel>
                 </Border>
 
-                <ContentControl x:Name="GHomeHost" Visibility="Collapsed"/>
-
                 <!-- Options -->
                 <Border Style="{StaticResource SectionBorder}">
                     <StackPanel>

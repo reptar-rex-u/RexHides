@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using System.Windows.Interop;
 using System.Windows.Threading;
-using RexHides.Features;
 using RexHides.Views;
 using RexHides.Win32Native;
 
@@ -15,7 +14,6 @@ namespace RexHides.Services;
 public class TitleBarOverlayService : IDisposable
 {
     private readonly WindowHidingService _hiding;
-    private readonly IGHomeModule _gHome;
     private readonly Dispatcher _dispatcher;
 
     private WinEventHook? _foregroundHook;
@@ -27,15 +25,11 @@ public class TitleBarOverlayService : IDisposable
     private bool _generalEnabled;
     private bool _trackingActive;
 
-    public TitleBarOverlayService(WindowHidingService hiding, IGHomeModule gHome)
+    public TitleBarOverlayService(WindowHidingService hiding)
     {
         _hiding = hiding;
-        _gHome = gHome;
         _dispatcher = Dispatcher.CurrentDispatcher;
         _hiding.WindowHidden += _ => Marshal(HideOverlay);
-#if GHOME
-        _gHome.StateChanged += () => Marshal(RefreshTrackingState);
-#endif
     }
 
     public void SetEnabled(bool enabled)
@@ -43,8 +37,6 @@ public class TitleBarOverlayService : IDisposable
         _generalEnabled = enabled;
         RefreshTrackingState();
     }
-
-    public void RefreshGHomeOverlay() => RefreshTrackingState();
 
     /// <summary>
     /// Re-evaluate the current foreground window. Called when the settings window
@@ -71,9 +63,6 @@ public class TitleBarOverlayService : IDisposable
     private void RefreshTrackingState()
     {
         bool shouldTrack = _generalEnabled;
-#if GHOME
-        shouldTrack |= _gHome.IsOverlayActive;
-#endif
         if (shouldTrack == _trackingActive)
         {
             if (shouldTrack)
@@ -172,13 +161,6 @@ public class TitleBarOverlayService : IDisposable
 
     private bool IsOverlayTarget(IntPtr hwnd)
     {
-#if GHOME
-        if (_gHome.IsOverlayActive && _gHome.IsGHomeWindow(hwnd))
-        {
-            return IsCaptionWindow(hwnd);
-        }
-#endif
-
         if (!_generalEnabled)
         {
             return false;
@@ -304,13 +286,6 @@ public class TitleBarOverlayService : IDisposable
         {
             IntPtr target = _target;
             HideOverlay();
-#if GHOME
-            if (_gHome.IsGHomeWindow(target))
-            {
-                _gHome.Hide();
-                return;
-            }
-#endif
             _hiding.Hide(target);
         };
         new WindowInteropHelper(_overlay).EnsureHandle();

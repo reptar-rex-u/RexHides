@@ -1,6 +1,5 @@
 using System.Windows;
 using System.Windows.Threading;
-using RexHides.Features;
 using RexHides.Services;
 using RexHides.ViewModels;
 using RexHides.Views;
@@ -18,7 +17,6 @@ public partial class App : Application
     private HotkeyService? _hotkey;
     private AutoHideMonitor? _monitor;
     private TitleBarOverlayService? _overlay;
-    private IGHomeModule? _gHome;
     private ElevationService? _elevation;
     private MainWindow? _mainWindow;
     private EventWaitHandle? _stopEvent;
@@ -87,13 +85,8 @@ public partial class App : Application
         _elevation = new ElevationService();
         _hotkey = new HotkeyService();
         _monitor = new AutoHideMonitor(_settings, _hiding);
-#if GHOME
-        _gHome = new GHomeService(_hiding, _settings);
-#else
-        _gHome = NullGHomeModule.Instance;
-#endif
-        _overlay = new TitleBarOverlayService(_hiding, _gHome);
-        _tray = new TrayIconManager(_hiding, _settings, _elevation, _gHome);
+        _overlay = new TitleBarOverlayService(_hiding);
+        _tray = new TrayIconManager(_hiding, _settings, _elevation);
 
         // Recover windows orphaned by a previous crash before doing anything else.
         int recovered = _recovery.RecoverOrphanedWindows();
@@ -127,9 +120,8 @@ public partial class App : Application
         _monitor.Start();
 
         _overlay.SetEnabled(_settings.Current.EnableTitleBarButton);
-        _gHome.Initialize();
 
-        var viewModel = new MainViewModel(_hiding, _settings, _hotkey, _elevation, _overlay, _gHome);
+        var viewModel = new MainViewModel(_hiding, _settings, _hotkey, _elevation, _overlay);
         _mainWindow = new MainWindow(viewModel);
         _mainWindow.Deactivated += (_, _) => _overlay.RefreshFromForeground();
 
@@ -159,7 +151,6 @@ public partial class App : Application
         }
 
         _overlay?.Dispose();
-        _gHome?.Dispose();
         _monitor?.Dispose();
         _hotkey?.Dispose();
         _tray?.Dispose();
@@ -185,14 +176,6 @@ public partial class App : Application
             _mainWindow?.Hide();
             return;
         }
-
-#if GHOME
-        if (_gHome!.IsGHomeWindow(root))
-        {
-            _gHome.Toggle();
-            return;
-        }
-#endif
 
         _hiding?.HideForegroundWindow();
     }

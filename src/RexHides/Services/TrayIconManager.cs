@@ -1,10 +1,7 @@
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.IO;
-using System.Reflection;
 using System.Windows.Forms;
 using Microsoft.Win32;
-using RexHides.Features;
 using RexHides.Models;
 using RexHides.Win32Native;
 
@@ -12,43 +9,29 @@ namespace RexHides.Services;
 
 /// <summary>
 /// Owns the app's main tray icon plus one dynamic NotifyIcon per hidden window.
-#if GHOME
-/// Also owns the persistent Google Home tray icon when G Home mode is enabled.
-#endif
 /// </summary>
 public class TrayIconManager : IDisposable
 {
     private readonly WindowHidingService _hiding;
     private readonly SettingsService _settings;
     private readonly ElevationService _elevation;
-    private readonly IGHomeModule _gHome;
     private readonly Dictionary<IntPtr, NotifyIcon> _windowIcons = [];
     private readonly Icon _appIcon;
     private readonly bool _useLightTheme = DetectLightTheme();
     private NotifyIcon? _mainIcon;
-#if GHOME
-    private NotifyIcon? _gHomeIcon;
-    private Icon? _gHomeIconImage;
-    private static Icon? _gHomeBrandIcon;
-#endif
 
     public TrayIconManager(
         WindowHidingService hiding,
         SettingsService settings,
-        ElevationService elevation,
-        IGHomeModule gHome)
+        ElevationService elevation)
     {
         _hiding = hiding;
         _settings = settings;
         _elevation = elevation;
-        _gHome = gHome;
         _appIcon = CreateAppIcon();
 
         _hiding.WindowHidden += OnWindowHidden;
         _hiding.WindowRestored += OnWindowRestored;
-#if GHOME
-        _gHome.StateChanged += SyncGHomeTrayIcon;
-#endif
     }
 
     public event EventHandler? OpenSettingsRequested;
@@ -65,16 +48,6 @@ public class TrayIconManager : IDisposable
         menu.Items.Add("Open RexHides", null, (_, _) => OpenSettingsRequested?.Invoke(this, EventArgs.Empty));
         menu.Items.Add("Restore All Windows", null, (_, _) => _hiding.RestoreAll());
         menu.Items.Add(new ToolStripSeparator());
-
-#if GHOME
-        var gHomeMenu = new ToolStripMenuItem("G Home");
-        gHomeMenu.DropDownItems.Add("Show G Home", null, (_, _) => _gHome.Show());
-        gHomeMenu.DropDownItems.Add("Hide G Home", null, (_, _) => _gHome.Hide());
-        gHomeMenu.DropDownItems.Add(new ToolStripSeparator());
-        gHomeMenu.DropDownItems.Add("Close G Home", null, (_, _) => _gHome.CloseWindow());
-        menu.Items.Add(gHomeMenu);
-        menu.Items.Add(new ToolStripSeparator());
-#endif
 
         if (!_elevation.IsElevated)
         {
@@ -93,10 +66,6 @@ public class TrayIconManager : IDisposable
             ContextMenuStrip = menu,
         };
         _mainIcon.DoubleClick += (_, _) => OpenSettingsRequested?.Invoke(this, EventArgs.Empty);
-
-#if GHOME
-        SyncGHomeTrayIcon();
-#endif
     }
 
     public void ShowBalloon(string title, string message, ToolTipIcon icon = ToolTipIcon.Info)
@@ -117,9 +86,6 @@ public class TrayIconManager : IDisposable
         }
 
         _windowIcons.Clear();
-#if GHOME
-        DisposeGHomeTrayIcon();
-#endif
 
         if (_mainIcon != null)
         {
@@ -133,13 +99,6 @@ public class TrayIconManager : IDisposable
 
     private void OnWindowHidden(HiddenWindowEntry entry)
     {
-#if GHOME
-        if (_gHome.IsGHomeWindow(entry.Handle))
-        {
-            return;
-        }
-#endif
-
         IntPtr hwnd = entry.Handle;
         Icon icon = IconExtractor.GetIconForWindow(hwnd, entry.ExePath);
 
@@ -169,13 +128,6 @@ public class TrayIconManager : IDisposable
 
     private void OnWindowRestored(HiddenWindowEntry entry)
     {
-#if GHOME
-        if (_gHome.IsGHomeWindow(entry.Handle))
-        {
-            return;
-        }
-#endif
-
         if (_windowIcons.Remove(entry.Handle, out NotifyIcon? icon))
         {
             icon.Visible = false;
@@ -183,157 +135,6 @@ public class TrayIconManager : IDisposable
             icon.Dispose();
         }
     }
-
-#if GHOME
-    private void SyncGHomeTrayIcon()
-    {
-        if (!_gHome.IsEnabled)
-        {
-            DisposeGHomeTrayIcon();
-            return;
-        }
-
-        EnsureGHomeTrayIcon();
-        UpdateGHomeTrayPresentation();
-    }
-
-    private void EnsureGHomeTrayIcon()
-    {
-        if (_gHomeIcon != null)
-        {
-            return;
-        }
-
-        var menu = CreateContextMenu();
-        menu.Items.Add("Show G Home", null, (_, _) => _gHome.Show());
-        menu.Items.Add("Hide G Home", null, (_, _) => _gHome.Hide());
-        menu.Items.Add(new ToolStripSeparator());
-        menu.Items.Add("Close G Home", null, (_, _) => _gHome.CloseWindow());
-        menu.Items.Add(new ToolStripSeparator());
-        menu.Items.Add("Exit RexHides", null, (_, _) => ExitRequested?.Invoke(this, EventArgs.Empty));
-
-        _gHomeIcon = new NotifyIcon
-        {
-            Visible = true,
-            ContextMenuStrip = menu,
-        };
-        _gHomeIcon.MouseUp += (_, e) =>
-        {
-            if (e.Button == MouseButtons.Left)
-            {
-                _gHome.Toggle();
-                UpdateGHomeTrayPresentation();
-            }
-        };
-    }
-
-    private void UpdateGHomeTrayPresentation()
-    {
-        if (_gHomeIcon == null)
-        {
-            return;
-        }
-
-        ReplaceGHomeIconImage();
-        string state = _gHome.IsHidden ? "hidden" : _gHome.IsConnected ? "ready" : "waiting";
-        _gHomeIcon.Text = Truncate($"G Home ({state})", 63);
-    }
-
-    private void ReplaceGHomeIconImage()
-    {
-        _gHomeIconImage?.Dispose();
-        _gHomeIconImage = CreateGHomeTrayIcon();
-        if (_gHomeIcon != null)
-        {
-            _gHomeIcon.Icon = _gHomeIconImage;
-        }
-    }
-
-    private void DisposeGHomeTrayIcon()
-    {
-        if (_gHomeIcon != null)
-        {
-            _gHomeIcon.Visible = false;
-            _gHomeIcon.Dispose();
-            _gHomeIcon = null;
-        }
-
-        _gHomeIconImage?.Dispose();
-        _gHomeIconImage = null;
-    }
-
-    private Icon CreateGHomeTrayIcon()
-    {
-        _gHomeBrandIcon ??= LoadEmbeddedGHomeIcon();
-        return (Icon)_gHomeBrandIcon.Clone();
-    }
-
-    private static Icon LoadEmbeddedGHomeIcon()
-    {
-        using Stream? stream = Assembly.GetExecutingAssembly()
-            .GetManifestResourceStream("RexHides.Assets.ghome.ico");
-        if (stream == null)
-        {
-            return CreateFallbackGHomeIcon();
-        }
-
-        try
-        {
-            return new Icon(stream);
-        }
-        catch (ArgumentException)
-        {
-            stream.Position = 0;
-            using Image image = Image.FromStream(stream);
-            return CreateIconFromImage(image);
-        }
-    }
-
-    private static Icon CreateIconFromImage(Image image)
-    {
-        using var bitmap = new Bitmap(image, new Size(32, 32));
-        IntPtr hIcon = bitmap.GetHicon();
-        try
-        {
-            using Icon temp = Icon.FromHandle(hIcon);
-            return (Icon)temp.Clone();
-        }
-        finally
-        {
-            NativeMethods.DestroyIcon(hIcon);
-        }
-    }
-
-    private static Icon CreateFallbackGHomeIcon()
-    {
-        using var bmp = new Bitmap(32, 32);
-        using (var g = Graphics.FromImage(bmp))
-        {
-            g.SmoothingMode = SmoothingMode.AntiAlias;
-            using var back = new SolidBrush(Color.FromArgb(36, 36, 36));
-            g.FillEllipse(back, 1, 1, 30, 30);
-            using var glyph = new Pen(Color.FromArgb(229, 160, 13), 2.5f)
-            {
-                StartCap = LineCap.Round,
-                EndCap = LineCap.Round,
-            };
-            g.DrawArc(glyph, 8, 8, 16, 16, 200, 220);
-            g.DrawLine(glyph, 16, 22, 16, 27);
-            g.DrawLine(glyph, 12, 27, 20, 27);
-        }
-
-        IntPtr hIcon = bmp.GetHicon();
-        try
-        {
-            using Icon temp = Icon.FromHandle(hIcon);
-            return (Icon)temp.Clone();
-        }
-        finally
-        {
-            NativeMethods.DestroyIcon(hIcon);
-        }
-    }
-#endif
 
     private static string Truncate(string value, int max) =>
         value.Length <= max ? value : value[..(max - 1)] + "\u2026";

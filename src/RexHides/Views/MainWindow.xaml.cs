@@ -16,11 +16,6 @@ public partial class MainWindow : Window
 
         HotkeyBox.SetDisplay(viewModel.HotkeyText);
         HotkeyBox.HotkeyCaptured += (_, hotkey) => viewModel.ApplyHotkey(hotkey);
-
-#if GHOME
-        GHomeHost.Content = new GHomeSection();
-        GHomeHost.Visibility = Visibility.Visible;
-#endif
     }
 
     /// <summary>Closing the window keeps the app alive in the tray unless a real exit was requested.</summary>

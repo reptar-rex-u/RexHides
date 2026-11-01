@@ -2,7 +2,6 @@ bin/
 obj/
 dist/
 publish/
-PERSONAL.md
 *.user
 *.suo
 .vs/

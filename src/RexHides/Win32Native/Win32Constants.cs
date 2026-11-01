@@ -65,10 +65,6 @@ internal static class Win32Constants
 
     // OpenProcess
     public const uint PROCESS_QUERY_LIMITED_INFORMATION = 0x1000;
-    public const uint PROCESS_VM_READ = 0x0010;
-
-    // NtQueryInformationProcess (PROCESSINFOCLASS)
-    public const int ProcessCommandLineInformation = 60;
 
     // DwmGetWindowAttribute
     public const uint DWMWA_CLOAKED = 14;

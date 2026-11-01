@@ -2,7 +2,6 @@ using System.Collections.ObjectModel;
 using System.IO;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using RexHides.Features;
 using RexHides.Models;
 using RexHides.Services;
 using RexHides.Win32Native;
@@ -17,11 +16,10 @@ public record RunningWindowInfo(long Hwnd, string Title, string ProcessName)
 public partial class MainViewModel : ObservableObject
 {
     private readonly WindowHidingService _hiding;
-    protected readonly SettingsService _settings;
+    private readonly SettingsService _settings;
     private readonly HotkeyService _hotkey;
     private readonly ElevationService _elevation;
     private readonly TitleBarOverlayService _overlay;
-    protected readonly IGHomeModule _gHome;
 
     [ObservableProperty]
     private string _hotkeyText = string.Empty;
@@ -40,15 +38,13 @@ public partial class MainViewModel : ObservableObject
         SettingsService settings,
         HotkeyService hotkey,
         ElevationService elevation,
-        TitleBarOverlayService overlay,
-        IGHomeModule gHome)
+        TitleBarOverlayService overlay)
     {
         _hiding = hiding;
         _settings = settings;
         _hotkey = hotkey;
         _elevation = elevation;
         _overlay = overlay;
-        _gHome = gHome;
 
         HotkeyText = settings.Current.Hotkey.ToString();
 
@@ -59,37 +55,17 @@ public partial class MainViewModel : ObservableObject
 
         _hiding.WindowHidden += entry =>
         {
-            if (_gHome.IsGHomeWindow(entry.Handle))
-            {
-#if GHOME
-                GHomeStatusText = _gHome.StatusText;
-#endif
-                return;
-            }
-
             HiddenWindows.Add(new HiddenWindowViewModel(entry, _hiding, AddAutoHideRuleFromEntry));
             StatusText = $"Hidden: {entry.Title}";
         };
         _hiding.WindowRestored += entry =>
         {
-            if (_gHome.IsGHomeWindow(entry.Handle))
-            {
-#if GHOME
-                GHomeStatusText = _gHome.StatusText;
-#endif
-                return;
-            }
-
             HiddenWindowViewModel? vm = HiddenWindows.FirstOrDefault(w => w.Entry.Handle == entry.Handle);
             if (vm != null)
             {
                 HiddenWindows.Remove(vm);
             }
         };
-
-#if GHOME
-        WireGHome(_gHome, _overlay, _settings);
-#endif
 
         RefreshRunningWindows();
     }
