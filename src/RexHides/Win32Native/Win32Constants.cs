@@ -68,6 +68,9 @@ internal static class Win32Constants
 
     // DwmGetWindowAttribute
     public const uint DWMWA_CLOAKED = 14;
+    public const uint DWMWA_USE_IMMERSIVE_DARK_MODE = 20;
+    public const uint DWMWA_CAPTION_COLOR = 35;
+    public const uint DWMWA_TEXT_COLOR = 36;
     public const uint DWMWA_EXTENDED_FRAME_BOUNDS = 9;
 
     // SetWindowPos

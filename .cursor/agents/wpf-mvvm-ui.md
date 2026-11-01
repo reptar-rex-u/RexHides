@@ -12,7 +12,9 @@ Key paths:
 Hard rules:
 - Use CommunityToolkit source generators (`[ObservableProperty]`, `[RelayCommand]`) - no hand-written `INotifyPropertyChanged` boilerplate.
 - Settings-backed properties write through to `SettingsService.Current` and call `Save()` in the setter.
-- Follow the existing visual language: accent #4F46E5, section cards via the `SectionBorder` style, no third-party UI libraries.
+- Follow the dark bento visual language (shared with RexControls and Rex New Tab): palette, card styles (`BlueCard`, `PurpleCard`, `GreenCard`, `AmberCard`), keyed button styles, and implicit control templates live in `src/RexHides/Themes/Bento.xaml`. Reuse those resources instead of inline colors; no light theme and no third-party UI libraries.
+- Keep Button styles keyed so they never reach `TitleBarOverlayWindow`'s charcoal/gold button.
+- The dark caption bar is set from `MainWindow.OnSourceInitialized` via `NativeMethods.UseDarkTitleBar`.
 - The main window hides to tray on close (`App.IsExitRequested` guard in `OnClosing`) - never break that.
 - View models are UI-thread affine; service events already arrive on the dispatcher.
 

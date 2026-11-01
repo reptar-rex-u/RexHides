@@ -4,10 +4,13 @@ A Windows system utility (.NET 8 WPF) that minimizes any application window to i
 
 **Download:** [GitHub Releases](https://github.com/reptar-rex-u/RexHides/releases) — self-contained Windows x64 zip, no separate .NET install required.
 
+![RexHides settings window](docs/screenshot.png)
+
 ## Features
 
 - **Minimize any window to the tray** - hide the active window via hotkey, the settings UI, or automatic rules. Restore it by clicking its tray icon.
 - **Dynamic per-window tray icons** - each hidden window gets its own tray icon using that application's real icon (extracted via `WM_GETICON`, the window class icon, or the executable's embedded icon). Left-click restores the window and removes the icon; right-click offers Restore / Close Window / Restore All.
+- **Dark bento settings window** - a near-black window with a dark title bar and rounded, color-tinted cards: blue for hidden windows, purple for auto-hide rules, green for the hotkey, and amber for options.
 - **Theme-aware tray menus** - context menus for the main tray icon and hidden-window icons follow the Windows app light/dark theme detected when the tray manager starts. Theme changes made afterward take effect the next time the tray manager starts.
 - **Customizable global hotkey** - default `Ctrl+Alt+H`, re-mappable live in settings (implemented with `RegisterHotKey`, no keyboard-hook DLLs).
 - **Auto-hide rules** - match by process name (`spotify.exe`) or window title wildcard (`*Discord*`); matching windows are sent to the tray automatically when they appear. Rules can apply once per window or on every show, and never fight a window you manually restored.
@@ -65,6 +68,7 @@ src/RexHides/
                  settings, crash recovery, elevation, title bar overlay
   ViewModels/    CommunityToolkit.Mvvm view models
   Views/         MainWindow, hotkey capture control, overlay window
+  Themes/        Bento.xaml - dark palette, card styles, and control templates
 ```
 
 ## Known limitations

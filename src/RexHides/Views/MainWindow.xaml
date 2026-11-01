@@ -4,65 +4,17 @@
         xmlns:views="clr-namespace:RexHides.Views"
         xmlns:vm="clr-namespace:RexHides.ViewModels"
         Title="RexHides"
-        Width="720" Height="640"
-        MinWidth="600" MinHeight="480"
+        Width="1000" Height="780"
+        MinWidth="820" MinHeight="600"
         WindowStartupLocation="CenterScreen"
-        Background="#F4F4F8"
+        Background="{StaticResource BentoWindowBackground}"
+        Foreground="{StaticResource BentoTextBrush}"
+        FontFamily="Segoe UI"
+        FontSize="13"
         d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d">
-
-    <Window.Resources>
-        <Style x:Key="SectionBorder" TargetType="Border">
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="CornerRadius" Value="8"/>
-            <Setter Property="Padding" Value="14"/>
-            <Setter Property="Margin" Value="0,0,0,12"/>
-            <Setter Property="BorderBrush" Value="#E2E2EA"/>
-            <Setter Property="BorderThickness" Value="1"/>
-        </Style>
-        <Style x:Key="SectionTitle" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Foreground" Value="#1F1F2E"/>
-            <Setter Property="Margin" Value="0,0,0,8"/>
-        </Style>
-        <Style x:Key="AccentButton" TargetType="Button">
-            <Setter Property="Background" Value="#4F46E5"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Padding" Value="12,6"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" CornerRadius="6"
-                                Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#4338CA"/>
-                </Trigger>
-                <Trigger Property="IsEnabled" Value="False">
-                    <Setter Property="Background" Value="#A5A3D9"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-        <Style x:Key="SubtleButton" TargetType="Button" BasedOn="{StaticResource AccentButton}">
-            <Setter Property="Background" Value="#EEEEF6"/>
-            <Setter Property="Foreground" Value="#33334A"/>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#DFDFEE"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-    </Window.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -72,122 +24,168 @@
         </Grid.RowDefinitions>
 
         <!-- Header -->
-        <Border Grid.Row="0" Background="#1F1F2E" Padding="18,14">
+        <Grid Grid.Row="0" Margin="24,20,24,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel VerticalAlignment="Center">
+                <TextBlock Style="{StaticResource Eyebrow}" Text="REXHIDES" Margin="1,0,0,4"/>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Window tray" FontSize="26" FontWeight="SemiBold"
+                               Foreground="{StaticResource BentoTextBrush}" VerticalAlignment="Center"/>
+                    <Border Margin="14,4,0,0" VerticalAlignment="Center"
+                            Background="#0FFFFFFF" BorderBrush="{StaticResource BentoBorderBrush}"
+                            BorderThickness="1" CornerRadius="999" Padding="10,4">
+                        <StackPanel Orientation="Horizontal">
+                            <Ellipse Width="8" Height="8" Fill="{StaticResource GreenLabelBrush}"
+                                     VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding ElevationLabel}" Margin="7,0,0,0" FontSize="12"
+                                       Foreground="{StaticResource BentoMutedBrush}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                <Button Style="{StaticResource PrimaryAmberButton}" Margin="0,0,10,0"
+                        Command="{Binding HideActiveWindowCommand}"
+                        Content="Hide Active Window (3s)"/>
+                <Button Style="{StaticResource NeutralButton}"
+                        Command="{Binding RestoreAllCommand}"
+                        Content="Restore All"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- Content -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
+                      Padding="22,10,22,22" Focusable="False">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="RexHides" FontSize="20" FontWeight="Bold" Foreground="White"
-                               VerticalAlignment="Center"/>
-                    <Border Background="#33FFFFFF" CornerRadius="10" Padding="8,2" Margin="12,0,0,0"
-                            VerticalAlignment="Center">
-                        <TextBlock Text="{Binding ElevationLabel}" FontSize="11" Foreground="#D8D8E8"/>
-                    </Border>
-                </StackPanel>
-                <StackPanel Grid.Column="1" Orientation="Horizontal">
-                    <Button Style="{StaticResource AccentButton}" Margin="0,0,8,0"
-                            Command="{Binding HideActiveWindowCommand}"
-                            Content="Hide Active Window (3s)"/>
-                    <Button Style="{StaticResource SubtleButton}"
-                            Command="{Binding RestoreAllCommand}"
-                            Content="Restore All"/>
-                </StackPanel>
-            </Grid>
-        </Border>
-
-        <!-- Content -->
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="16,14,16,0">
-            <StackPanel>
-
-                <!-- Hotkey -->
-                <Border Style="{StaticResource SectionBorder}">
-                    <StackPanel>
-                        <TextBlock Style="{StaticResource SectionTitle}" Text="Global hotkey"/>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="240"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <views:HotkeyCaptureBox x:Name="HotkeyBox"/>
-                            <TextBlock Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center"
-                                       TextWrapping="Wrap" Foreground="#6B6B80"
-                                       Text="Press this shortcut anywhere in Windows to send the focused window to the tray."/>
-                        </Grid>
-                        <TextBlock Text="{Binding HotkeyError}" Foreground="#D32F2F" Margin="0,6,0,0"
-                                   Visibility="{Binding HotkeyError, Converter={x:Static views:Converters.NullToCollapsed}}"/>
-                    </StackPanel>
-                </Border>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="16"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="16"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
                 <!-- Hidden windows -->
-                <Border Style="{StaticResource SectionBorder}">
+                <ContentControl Grid.Row="0" Grid.ColumnSpan="3" Style="{StaticResource BlueCard}">
                     <StackPanel>
-                        <TextBlock Style="{StaticResource SectionTitle}" Text="Hidden windows"/>
-                        <TextBlock Foreground="#6B6B80" Margin="0,0,0,8"
-                                   Text="Each hidden window also gets its own tray icon - left-click the icon to bring it back."/>
-                        <ListView ItemsSource="{Binding HiddenWindows}" MaxHeight="180"
-                                  BorderThickness="0" Background="Transparent">
-                            <ListView.View>
-                                <GridView>
-                                    <GridViewColumn Header="Window" Width="280"
-                                                    DisplayMemberBinding="{Binding Title}"/>
-                                    <GridViewColumn Header="Process" Width="140"
-                                                    DisplayMemberBinding="{Binding ProcessName}"/>
-                                    <GridViewColumn Header="Hidden at" Width="80"
-                                                    DisplayMemberBinding="{Binding HiddenAt}"/>
-                                    <GridViewColumn Header="" Width="250">
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <StackPanel Orientation="Horizontal">
-                                                    <Button Style="{StaticResource SubtleButton}" Padding="8,3"
-                                                            Command="{Binding RestoreCommand}" Content="Restore"/>
-                                                    <Button Style="{StaticResource SubtleButton}" Padding="8,3" Margin="6,0,0,0"
-                                                            Command="{Binding CreateAutoHideRuleCommand}"
-                                                            ToolTip="Create an auto-hide rule for this process"
-                                                            Content="Auto-hide"/>
-                                                    <Button Style="{StaticResource SubtleButton}" Padding="8,3" Margin="6,0,0,0"
-                                                            Command="{Binding CloseWindowCommand}" Content="Close"/>
-                                                </StackPanel>
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-                                </GridView>
-                            </ListView.View>
-                        </ListView>
+                        <TextBlock Style="{StaticResource CardLabel}" Foreground="{StaticResource BlueLabelBrush}"
+                                   Text="HIDDEN WINDOWS"/>
+                        <TextBlock Style="{StaticResource CardDescription}"
+                                   Text="Each hidden window also gets its own tray icon. Left-click the icon to bring it back."/>
+                        <Grid>
+                            <ListView ItemsSource="{Binding HiddenWindows}" MaxHeight="220"
+                                      BorderThickness="0" Background="Transparent"
+                                      Foreground="{StaticResource BentoTextBrush}">
+                                <ListView.Style>
+                                    <Style TargetType="ListView">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding HiddenWindows.Count}" Value="0">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ListView.Style>
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn Header="Window" Width="320"
+                                                        DisplayMemberBinding="{Binding Title}"/>
+                                        <GridViewColumn Header="Process" Width="150"
+                                                        DisplayMemberBinding="{Binding ProcessName}"/>
+                                        <GridViewColumn Header="Hidden at" Width="90"
+                                                        DisplayMemberBinding="{Binding HiddenAt}"/>
+                                        <GridViewColumn Header="" Width="270">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <Button Style="{StaticResource BlueButton}" Padding="9,4" FontSize="12"
+                                                                Command="{Binding RestoreCommand}" Content="Restore"/>
+                                                        <Button Style="{StaticResource BlueButton}" Padding="9,4" FontSize="12"
+                                                                Margin="6,0,0,0"
+                                                                Command="{Binding CreateAutoHideRuleCommand}"
+                                                                ToolTip="Create an auto-hide rule for this process"
+                                                                Content="Auto-hide"/>
+                                                        <Button Style="{StaticResource BlueButton}" Padding="9,4" FontSize="12"
+                                                                Margin="6,0,0,0"
+                                                                Command="{Binding CloseWindowCommand}" Content="Close"/>
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>
+                            <Border Padding="16,18">
+                                <Border.Style>
+                                    <Style TargetType="Border" BasedOn="{StaticResource InnerPanel}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding HiddenWindows.Count}" Value="0">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                                <TextBlock HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"
+                                           Foreground="{StaticResource BentoMutedBrush}"
+                                           Text="Nothing hidden right now. Press the hotkey on any window."/>
+                            </Border>
+                        </Grid>
                     </StackPanel>
-                </Border>
+                </ContentControl>
 
                 <!-- Auto-hide rules -->
-                <Border Style="{StaticResource SectionBorder}">
+                <ContentControl Grid.Row="2" Grid.ColumnSpan="3" Style="{StaticResource PurpleCard}">
                     <StackPanel>
-                        <TextBlock Style="{StaticResource SectionTitle}" Text="Auto-hide rules"/>
-                        <TextBlock Foreground="#6B6B80" Margin="0,0,0,8"
+                        <TextBlock Style="{StaticResource CardLabel}" Foreground="{StaticResource PurpleLabelBrush}"
+                                   Text="AUTO-HIDE RULES"/>
+                        <TextBlock Style="{StaticResource CardDescription}"
                                    Text="Windows matching these rules are sent to the tray automatically when they appear."/>
                         <DataGrid ItemsSource="{Binding Rules}" AutoGenerateColumns="False"
-                                  CanUserAddRows="False" HeadersVisibility="Column"
-                                  GridLinesVisibility="None" Background="Transparent"
-                                  BorderThickness="0" MaxHeight="180" RowHeight="32">
+                                  CanUserAddRows="False" CanUserResizeRows="False"
+                                  HeadersVisibility="Column" RowHeaderWidth="0"
+                                  GridLinesVisibility="None"
+                                  Background="Transparent" BorderThickness="0"
+                                  Foreground="{StaticResource BentoTextBrush}"
+                                  RowBackground="#0BFFFFFF" AlternatingRowBackground="#0BFFFFFF"
+                                  HorizontalScrollBarVisibility="Disabled"
+                                  SelectionMode="Single"
+                                  MaxHeight="220" RowHeight="36">
                             <DataGrid.Columns>
-                                <DataGridCheckBoxColumn Header="On" Width="40"
+                                <DataGridCheckBoxColumn Header="On" Width="44"
+                                    ElementStyle="{StaticResource GridCheckBoxElement}"
+                                    EditingElementStyle="{StaticResource GridCheckBoxEditing}"
                                     Binding="{Binding Enabled, UpdateSourceTrigger=PropertyChanged}"/>
-                                <DataGridTemplateColumn Header="Match" Width="130">
+                                <DataGridTemplateColumn Header="Match" Width="140">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <ComboBox ItemsSource="{Binding MatchTypes}"
-                                                      SelectedItem="{Binding MatchType, UpdateSourceTrigger=PropertyChanged}"
-                                                      BorderThickness="0" Background="Transparent"/>
+                                            <ComboBox Style="{StaticResource InlineComboBox}"
+                                                      ItemsSource="{Binding MatchTypes}"
+                                                      SelectedItem="{Binding MatchType, UpdateSourceTrigger=PropertyChanged}"/>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
                                 <DataGridTextColumn Header="Pattern (e.g. spotify.exe or *Discord*)" Width="*"
+                                    ElementStyle="{StaticResource GridTextElement}"
+                                    EditingElementStyle="{StaticResource GridTextEditing}"
                                     Binding="{Binding Pattern, UpdateSourceTrigger=LostFocus}"/>
-                                <DataGridCheckBoxColumn Header="Once" Width="50"
+                                <DataGridCheckBoxColumn Header="Once" Width="54"
+                                    ElementStyle="{StaticResource GridCheckBoxElement}"
+                                    EditingElementStyle="{StaticResource GridCheckBoxEditing}"
                                     Binding="{Binding OnlyFirstLaunch, UpdateSourceTrigger=PropertyChanged}"/>
-                                <DataGridTemplateColumn Width="60">
+                                <DataGridTemplateColumn Width="56">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <Button Style="{StaticResource SubtleButton}" Padding="8,2" Content="✕"
+                                            <Button Style="{StaticResource PurpleButton}" Padding="8,2" FontSize="12"
+                                                    HorizontalAlignment="Center" Content="✕"
                                                     Command="{Binding DataContext.RemoveRuleCommand,
                                                               RelativeSource={RelativeSource AncestorType=DataGrid}}"
                                                     CommandParameter="{Binding}"/>
@@ -196,58 +194,93 @@
                                 </DataGridTemplateColumn>
                             </DataGrid.Columns>
                         </DataGrid>
-                        <Grid Margin="0,10,0,0">
+                        <Grid Margin="0,12,0,0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <Button Style="{StaticResource SubtleButton}" Content="Add Rule"
+                            <Button Style="{StaticResource PurpleButton}" Content="Add Rule"
                                     Command="{Binding AddRuleCommand}"/>
-                            <ComboBox Grid.Column="1" Margin="12,0,6,0"
+                            <ComboBox Grid.Column="1" Margin="12,0,8,0"
                                       ItemsSource="{Binding RunningWindows}"
                                       SelectedItem="{Binding SelectedRunningWindow}"
                                       DisplayMemberPath="DisplayText"
                                       VerticalContentAlignment="Center"/>
-                            <Button Grid.Column="2" Style="{StaticResource SubtleButton}" Content="↻"
-                                    ToolTip="Refresh window list" Margin="0,0,6,0"
+                            <Button Grid.Column="2" Style="{StaticResource PurpleButton}" Content="↻"
+                                    ToolTip="Refresh window list" Margin="0,0,8,0"
                                     Command="{Binding RefreshRunningWindowsCommand}"/>
-                            <Button Grid.Column="3" Style="{StaticResource AccentButton}"
+                            <Button Grid.Column="3" Style="{StaticResource PurpleStrongButton}"
                                     Content="Add Rule From Window"
                                     Command="{Binding AddRuleFromSelectedCommand}"/>
                         </Grid>
                     </StackPanel>
-                </Border>
+                </ContentControl>
+
+                <!-- Global hotkey -->
+                <ContentControl Grid.Row="4" Grid.Column="0" Style="{StaticResource GreenCard}">
+                    <DockPanel>
+                        <TextBlock DockPanel.Dock="Top" Style="{StaticResource CardLabel}"
+                                   Foreground="{StaticResource GreenLabelBrush}"
+                                   Text="GLOBAL HOTKEY" Margin="2,0,0,12"/>
+                        <Border Style="{StaticResource InnerPanel}">
+                            <StackPanel>
+                                <views:HotkeyCaptureBox x:Name="HotkeyBox" Width="240" HorizontalAlignment="Left"/>
+                                <TextBlock Margin="0,10,0,0" TextWrapping="Wrap" FontSize="12.5"
+                                           Foreground="{StaticResource BentoMutedBrush}"
+                                           Text="Press this shortcut anywhere in Windows to send the focused window to the tray."/>
+                                <TextBlock Text="{Binding HotkeyError}" Foreground="{StaticResource BentoErrorBrush}"
+                                           Margin="0,8,0,0" TextWrapping="Wrap"
+                                           Visibility="{Binding HotkeyError, Converter={x:Static views:Converters.NullToCollapsed}}"/>
+                            </StackPanel>
+                        </Border>
+                    </DockPanel>
+                </ContentControl>
 
                 <!-- Options -->
-                <Border Style="{StaticResource SectionBorder}">
-                    <StackPanel>
-                        <TextBlock Style="{StaticResource SectionTitle}" Text="Options"/>
-                        <CheckBox Content="Start minimized to tray" Margin="0,2"
-                                  IsChecked="{Binding StartMinimized}"/>
-                        <CheckBox Content="Show notification balloons" Margin="0,2"
-                                  IsChecked="{Binding ShowBalloonTips}"/>
-                        <CheckBox Content="Show a tray-minimize button on the active window's title bar (experimental)"
-                                  Margin="0,2" IsChecked="{Binding EnableTitleBarButton}"/>
-                        <CheckBox Content="Start with Windows" Margin="0,2"
-                                  IsChecked="{Binding AutostartEnabled}"/>
-                        <CheckBox Content="Start with Windows as administrator (Task Scheduler, no UAC prompt)"
-                                  Margin="0,2" IsChecked="{Binding ElevatedAutostartEnabled}"
-                                  IsEnabled="{Binding IsElevated}"/>
-                        <Button Style="{StaticResource AccentButton}" Margin="0,10,0,0"
-                                HorizontalAlignment="Left"
-                                Content="Restart as Administrator"
-                                Command="{Binding RestartElevatedCommand}"
-                                Visibility="{Binding IsNotElevated, Converter={x:Static views:Converters.BoolToVisibility}}"/>
-                    </StackPanel>
-                </Border>
-            </StackPanel>
+                <ContentControl Grid.Row="4" Grid.Column="2" Style="{StaticResource AmberCard}">
+                    <DockPanel>
+                        <TextBlock DockPanel.Dock="Top" Style="{StaticResource CardLabel}"
+                                   Foreground="{StaticResource AmberLabelBrush}"
+                                   Text="OPTIONS" Margin="2,0,0,12"/>
+                        <Border Style="{StaticResource InnerPanel}">
+                            <StackPanel>
+                                <CheckBox Margin="0,3" IsChecked="{Binding StartMinimized}">
+                                    <TextBlock Text="Start minimized to tray" TextWrapping="Wrap"/>
+                                </CheckBox>
+                                <CheckBox Margin="0,3" IsChecked="{Binding ShowBalloonTips}">
+                                    <TextBlock Text="Show notification balloons" TextWrapping="Wrap"/>
+                                </CheckBox>
+                                <CheckBox Margin="0,3" IsChecked="{Binding EnableTitleBarButton}">
+                                    <TextBlock Text="Show a tray-minimize button on the active window's title bar (experimental)"
+                                               TextWrapping="Wrap"/>
+                                </CheckBox>
+                                <CheckBox Margin="0,3" IsChecked="{Binding AutostartEnabled}">
+                                    <TextBlock Text="Start with Windows" TextWrapping="Wrap"/>
+                                </CheckBox>
+                                <CheckBox Margin="0,3" IsChecked="{Binding ElevatedAutostartEnabled}"
+                                          IsEnabled="{Binding IsElevated}">
+                                    <TextBlock Text="Start with Windows as administrator (Task Scheduler, no UAC prompt)"
+                                               TextWrapping="Wrap"/>
+                                </CheckBox>
+                                <Button Style="{StaticResource AmberButton}" Margin="0,12,0,0"
+                                        HorizontalAlignment="Left"
+                                        Content="Restart as Administrator"
+                                        Command="{Binding RestartElevatedCommand}"
+                                        Visibility="{Binding IsNotElevated, Converter={x:Static views:Converters.BoolToVisibility}}"/>
+                            </StackPanel>
+                        </Border>
+                    </DockPanel>
+                </ContentControl>
+            </Grid>
         </ScrollViewer>
 
         <!-- Status bar -->
-        <Border Grid.Row="2" Background="#EAEAF2" Padding="16,7">
-            <TextBlock Text="{Binding StatusText}" Foreground="#55556A" FontSize="12"/>
+        <Border Grid.Row="2" Background="Transparent" BorderBrush="#0AFFFFFF" BorderThickness="0,1,0,0"
+                Padding="18,8">
+            <TextBlock Text="{Binding StatusText}" Foreground="{StaticResource BentoMutedBrush}" FontSize="12"
+                       TextTrimming="CharacterEllipsis"/>
         </Border>
     </Grid>
 </Window>

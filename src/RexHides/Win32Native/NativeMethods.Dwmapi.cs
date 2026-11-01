@@ -12,6 +12,23 @@ internal static partial class NativeMethods
     public static extern int DwmGetWindowAttribute(
         IntPtr hwnd, uint dwAttribute, out int pvAttribute, int cbAttribute);
 
+    [DllImport("dwmapi.dll")]
+    public static extern int DwmSetWindowAttribute(
+        IntPtr hwnd, uint dwAttribute, ref int pvAttribute, int cbAttribute);
+
+    /// <summary>
+    /// Asks DWM for a dark caption bar in the given colors (COLORREF, 0x00BBGGRR). The explicit
+    /// caption color also overrides "show accent color on title bars". Unsupported attributes are
+    /// silently ignored on older Windows builds.
+    /// </summary>
+    public static void UseDarkTitleBar(IntPtr hwnd, int captionColor, int textColor)
+    {
+        int enabled = 1;
+        DwmSetWindowAttribute(hwnd, Win32Constants.DWMWA_USE_IMMERSIVE_DARK_MODE, ref enabled, sizeof(int));
+        DwmSetWindowAttribute(hwnd, Win32Constants.DWMWA_CAPTION_COLOR, ref captionColor, sizeof(int));
+        DwmSetWindowAttribute(hwnd, Win32Constants.DWMWA_TEXT_COLOR, ref textColor, sizeof(int));
+    }
+
     /// <summary>True if the window is DWM-cloaked (e.g. a suspended UWP frame).</summary>
     public static bool IsWindowCloaked(IntPtr hwnd)
     {
